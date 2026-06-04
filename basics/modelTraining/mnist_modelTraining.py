@@ -41,7 +41,7 @@ print(f"Training labels: {y_train.shape}")
 print(f"Testing images: {X_test.shape} -> 10,000 images, each 784 pixels")
 print(f"Testing labels: {y_test.shape}")
 print(f"Pixel range : {X_train.min()} - {X_train.max()}")
-print(f"Classes: {np.unique(y_train)}")
+print(f"Classes: {np.unique(y_train)}\n")
 
 # normalizing pixel values from [0,255] to [0,1]
 print("NORMALIZING PIXEL VALUES\n")
@@ -53,11 +53,11 @@ print(f"Pixel range after normalization: {X_train.min():.1f} - {X_train.max():.1
 # subsample training data for faster training
 print("SUBSAMPLING TRAINING DATA\n")
 
-SAMPLE_SIZE = 10000
-np.random.seed(42)
-idx = np.random.choice(len(X_train), size=SAMPLE_SIZE, replace=False)
-X_train_sub = X_train[idx]
-y_train_sub = y_train[idx]
+SAMPLE_SIZE = 60000
+# np.random.seed(42)
+# idx = np.random.choice(len(X_train), size=SAMPLE_SIZE, replace=False)
+X_train_sub = X_train
+y_train_sub = y_train
 
 print(f"using {SAMPLE_SIZE} of 60,000 training samples\n")
 print(f"Shape: {X_train_sub.shape}\n")

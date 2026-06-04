@@ -77,10 +77,10 @@ print("TRAINING SVM WITH RBF KERNEL (Kernel=rbf, C=5, gamma=scale)\n")
 
 svm = SVC(kernel="rbf", C=5, gamma="scale", random_state=42)
 
-t0 = time.time()
+# t0 = time.time()
 svm.fit(X_train_scaled, y_train_sub)
-elapsed = time.time() - t0
-print(f"Training done in {elapsed:.1f} seconds\n")
+# elapsed = time.time() - t0
+# print(f"Training done in {elapsed:.1f} seconds\n")
 print(f"Number of support vectors: {svm.support_vectors_.shape[0]}\n")
 
 # predicting and evaluating on test set
@@ -89,7 +89,7 @@ print("PREDICTING AND EVALUATING ON TEST SET (Evaluating on 10,000 test images)\
 y_pred = svm.predict(X_test_scaled)
 acc = accuracy_score(y_test, y_pred)
 print(f" Test Accuracy: {acc*100:.2f}%\n")
-print("Detaield Per-class report: \n")
+print("Detailed Per-class report: \n")
 print(classification_report(y_test, y_pred, target_names=[str(i) for i in range(10)]))
 
 # confusion matrix and simple predictions
@@ -106,7 +106,7 @@ sns.heatmap(
     cm,
     annot=True,
     fmt="d",
-    cmap="Blues",
+    cmap="Greens",
     xticklabels=range(10),
     yticklabels=range(10),
     ax=axes[0],
@@ -132,5 +132,5 @@ for i, si in enumerate(sample_idx):
 plt.tight_layout(rect=[0, 0, 1, 0.95])
 plt.savefig('mnist_svm_results.png', dpi=150, bbox_inches='tight')
 plt.show()
-print("Plots saved as mnist_svm_results.png\n")
-print("END OF SCRIPT\n")
+# print("Plots saved as mnist_svm_results.png\n")
+# print("END OF SCRIPT\n")

@@ -29,9 +29,7 @@ def load_labels(path):
 
 
 # loading all 4 files
-print("=" * 60)
-print("LOADING RAW IDX BINARY FILES")
-print("=" * 60)
+print("LOADING RAW IDX BINARY FILES\n")
 
 X_train = load_images("mnist_raw_dataset/train-images.idx3-ubyte")
 y_train = load_labels("mnist_raw_dataset/train-labels.idx1-ubyte")
@@ -46,18 +44,14 @@ print(f"Pixel range : {X_train.min()} - {X_train.max()}")
 print(f"Classes: {np.unique(y_train)}")
 
 # normalizing pixel values from [0,255] to [0,1]
-print("\n" + "=" * 60)
-print("NORMALIZING PIXEL VALUES")
-print("=" * 60)
+print("NORMALIZING PIXEL VALUES\n")
 
 X_train = X_train / 255.0
 X_test = X_test / 255.0
-print(f"Pixel range after normalization: {X_train.min():.1f} - {X_train.max():.1f}")
+print(f"Pixel range after normalization: {X_train.min():.1f} - {X_train.max():.1f}\n")
 
 # subsample training data for faster training
-print("\n" + "=" * 60)
-print("SUBSAMPLING TRAINING DATA")
-print("=" * 60)
+print("SUBSAMPLING TRAINING DATA\n")
 
 SAMPLE_SIZE = 10000
 np.random.seed(42)
@@ -65,49 +59,41 @@ idx = np.random.choice(len(X_train), size=SAMPLE_SIZE, replace=False)
 X_train_sub = X_train[idx]
 y_train_sub = y_train[idx]
 
-print(f"using {SAMPLE_SIZE} of 60,000 training samples")
-print(f"Shape: {X_train_sub.shape}")
+print(f"using {SAMPLE_SIZE} of 60,000 training samples\n")
+print(f"Shape: {X_train_sub.shape}\n")
 
 # standardize features to have mean=0 and std=1 using StandardScaler
-print("\n" + "=" * 60)
-print("STANDARDIZING FEATURES")
-print("=" * 60)
+print("STANDARDIZING FEATURES\n")
 
 scaler = StandardScaler()
 X_train_scaled = scaler.fit_transform(X_train_sub)
 X_test_scaled = scaler.transform(X_test)
-print("Featured scaled mean: mean nearly 0 and std nearly 1")
-print(f"Train mean: {X_train_scaled.mean():.2f}, Train std: {X_train_scaled.std():.2f}")
-print(f"Test mean: {X_test_scaled.mean():.2f}, Test std: {X_test_scaled.std():.2f}")
+print("Featured scaled mean: mean nearly 0 and std nearly 1\n")
+print(f"Train mean: {X_train_scaled.mean():.2f}, Train std: {X_train_scaled.std():.2f}\n")
+print(f"Test mean: {X_test_scaled.mean():.2f}, Test std: {X_test_scaled.std():.2f}\n")
 
 # Training SVM with RBF kernel
-print("\n" + "=" * 60)
-print("TRAINING SVM WITH RBF KERNEL (Kernel=rbf, C=5, gamma=scale)")
-print("=" * 60)
+print("TRAINING SVM WITH RBF KERNEL (Kernel=rbf, C=5, gamma=scale)\n")
 
 svm = SVC(kernel="rbf", C=5, gamma="scale", random_state=42)
 
 t0 = time.time()
 svm.fit(X_train_scaled, y_train_sub)
 elapsed = time.time() - t0
-print(f"Training done in {elapsed:.1f} seconds")
-print(f"Number of support vectors: {svm.support_vectors_.shape[0]}")
+print(f"Training done in {elapsed:.1f} seconds\n")
+print(f"Number of support vectors: {svm.support_vectors_.shape[0]}\n")
 
 # predicting and evaluating on test set
-print("\n" + "=" * 60)
-print("PREDICTING AND EVALUATING ON TEST SET (Evaluating on 10,000 test images)")
-print("=" * 60)
+print("PREDICTING AND EVALUATING ON TEST SET (Evaluating on 10,000 test images)\n")
 
 y_pred = svm.predict(X_test_scaled)
 acc = accuracy_score(y_test, y_pred)
-print(f"\n Test Accuracy: {acc*100:.2f}%")
-print("\nDetaield Per-class report: ")
+print(f" Test Accuracy: {acc*100:.2f}%\n")
+print("Detaield Per-class report: \n")
 print(classification_report(y_test, y_pred, target_names=[str(i) for i in range(10)]))
 
 # confusion matrix and simple predictions
-print("\n" + "=" * 60)
-print("CONFUSION MATRIX AND SIMPLE PREDICTIONS: GENERATING PLOTS")
-print("=" * 60)
+print("CONFUSION MATRIX AND SIMPLE PREDICTIONS: GENERATING PLOTS\n")
 
 cm = confusion_matrix(y_test, y_pred)
 fig, axes = plt.subplots(1, 2, figsize=(16, 6))
@@ -146,4 +132,5 @@ for i, si in enumerate(sample_idx):
 plt.tight_layout(rect=[0, 0, 1, 0.95])
 plt.savefig('mnist_svm_results.png', dpi=150, bbox_inches='tight')
 plt.show()
-print("Plots saved as mnist_svm_results.png")
+print("Plots saved as mnist_svm_results.png\n")
+print("END OF SCRIPT\n")

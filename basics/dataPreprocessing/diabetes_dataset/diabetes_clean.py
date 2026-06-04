@@ -25,6 +25,7 @@ for i, col in enumerate(df.columns):
     axs[i].boxplot(df[col], vert=False)
     axs[i].set_ylabel(col)
 plt.tight_layout()
+plt.savefig('diabetes_statSummary.png', dpi=150, bbox_inches='tight')
 plt.show()
 
 #removing outliers using IQR method
@@ -38,6 +39,7 @@ clean_df = df[(df['Insulin'] >= lower) & (df['Insulin'] <= upper)]
 corr = df.corr()
 plt.figure(dpi=130)
 sns.heatmap(corr, annot=True, fmt='.2f', cmap='coolwarm')
+plt.savefig('diabetes_correlation_heatmap.png', dpi=150, bbox_inches='tight')
 plt.show()
 print(corr['Outcome'].sort_values(ascending=False))
 
@@ -45,7 +47,8 @@ print(corr['Outcome'].sort_values(ascending=False))
 plt.pie(clean_df['Outcome'].value_counts(),
         labels=['Diabetes', 'Not Diabetes'],
         autopct='%.f%%', shadow=True)
-plt.title('Outcome Proportionality')       
+plt.title('Outcome Proportionality') 
+plt.savefig('diabetes_outcome_proportionality.png', dpi=150, bbox_inches='tight')      
 plt.show()
 
 # preparing separate vraibles and feature targets

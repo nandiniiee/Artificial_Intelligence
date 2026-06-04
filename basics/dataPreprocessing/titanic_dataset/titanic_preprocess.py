@@ -1,3 +1,4 @@
+
 import os
 import pandas as pd
 import numpy as np
@@ -66,4 +67,5 @@ plt.ylabel("Variable")
 plt.xlabel("Age")
 plt.title("Box Plot")
 print("\n📊 Displaying Box Plot... (Close the plot window to finish the script)")
+plt.savefig('titanic_boxPlot.png', dpi=150, bbox_inches='tight')
 plt.show()

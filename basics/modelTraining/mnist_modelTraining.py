@@ -99,7 +99,7 @@ print("CONFUSION MATRIX AND SIMPLE PREDICTIONS: GENERATING PLOTS\n")
 cm = confusion_matrix(y_test, y_pred)
 fig, axes = plt.subplots(1, 2, figsize=(16, 6))
 fig.suptitle(
-    f"SVM on MIST Results- Accuracy:{acc*100:.2f}%", fontsize=15, fontweight="bold"
+    f"SVM on MNIST Results- Accuracy:{acc*100:.2f}%", fontsize=15, fontweight="bold"
 )
 
 # Plot 1 : Confusion matrix

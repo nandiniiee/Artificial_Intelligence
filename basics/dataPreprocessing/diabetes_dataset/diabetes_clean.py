@@ -41,7 +41,7 @@ sns.heatmap(corr, annot=True, fmt='.2f', cmap='coolwarm')
 plt.show()
 print(corr['Outcome'].sort_values(ascending=False))
 
-# checking if dibates v/s non-diabetes are balanced
+# checking if diabetes v/s non-diabetes are balanced
 plt.pie(clean_df['Outcome'].value_counts(),
         labels=['Diabetes', 'Not Diabetes'],
         autopct='%.f%%', shadow=True)

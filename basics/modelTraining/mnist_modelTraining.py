@@ -29,6 +29,7 @@ def load_labels(path):
 
 
 # loading all 4 files
+
 print("LOADING RAW IDX BINARY FILES\n")
 
 X_train = load_images("mnist_raw_dataset/train-images.idx3-ubyte")

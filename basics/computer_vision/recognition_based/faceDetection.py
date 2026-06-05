@@ -1,10 +1,8 @@
 import cv2
 import os
+from mtcnn import MTCNN
 
-#loading the Haar Cascade classifier for face detection
-face_cascade = cv2.CascadeClassifier(
-    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-)
+detector = MTCNN()
 
 #input and output folder
 input_root = "dataset_fiveFaces"
@@ -25,35 +23,39 @@ for root, dirs, files in os.walk(input_root):
 
         if file.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
             input_path = os.path.join(root, file)
-            img = cv2.imread(input_path)
-            if img is None:
+            img_bgr = cv2.imread(input_path)
+            if img_bgr is None:
                 print(f"Could not read {input_path}")
                 continue
 
-            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            faces = face_cascade.detectMultiScale(
-                gray,
-                scaleFactor=1.1,
-                minNeighbors=5,
-                minSize=(30, 30)
-            )
+            img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)
+            faces = detector.detect_faces(img_rgb)
 
             if len(faces) == 0:
                 print(f"No face detected: {input_path}")
                 continue
 
-            # Select largest face
-            largest_face = max(faces, key=lambda rect: rect[2] * rect[3])
-            x, y, w, h = largest_face
+            # Select best face
+            best_face = max(faces, key=lambda face:face['confidence'])
+            x, y, w, h = best_face['box']
 
-            #Crop face
-            cropped_face = img[y:y+h, x:x+w]
+            x=max(0, x)
+            y=max(0, y)
 
+            #small padding
+            pad=int(0.001*max(w,h))
+            x1=max(0, x-pad)
+            y1=max(0, y-pad)
+            x2=min(img_rgb.shape[1], x+w+pad)
+            y2=min(img_rgb.shape[0], y+h+pad)
+            crop=img_bgr[y1:y2, x1:x2]
+            crop=cv2.resize(crop, (160, 160))
+            
             #saving the cropped face
-            save_path = os.path.join(output_dir, file)
-            cv2.imwrite(save_path, cropped_face)
-            print(f"Saved cropped face: {file}")
-
+            save_path=os.path.join(output_dir, file)
+            cv2.imwrite(save_path, crop)
+            print("Saved:", save_path)
+          
 print("Face detection and cropping completed.")
     
 

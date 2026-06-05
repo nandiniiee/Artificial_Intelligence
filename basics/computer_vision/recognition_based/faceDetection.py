@@ -1,6 +1,5 @@
 import cv2
 import os
-from mtcnn import MTCNN
 
 #loading the Haar Cascade classifier for face detection
 face_cascade = cv2.CascadeClassifier(

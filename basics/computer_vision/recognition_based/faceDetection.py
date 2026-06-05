@@ -1,60 +1,53 @@
 import cv2
 import os
 
-#loading the Haar Cascade classifier for face detection
-face_cascade = cv2.CascadeClassifier(
-    cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+INPUT_DIR = "dataset_fiveFaces"
+OUTPUT_DIR = "cropped_faces"
+MODEL_PATH="face_detection_yunet_2023mar.onnx"
+
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+#Loading YuNet
+detector=cv2.FaceDetectorYN.create(
+    MODEL_PATH,
+    "", 
+    (320,320),
+    score_threshold=0.8,
+    nms_threshold=0.3,
+    top_k=5000
 )
 
-#input and output folder
-input_root = "dataset_fiveFaces"
-output_root = "cropped_faces"
+#Processing images
+for filename in os.listdir(INPUT_DIR):
+    if not filename.lower().endswith((".jpg", ".jpeg", ".png")):
+        continue
+    input_path=os.path.join(INPUT_DIR, filename)
+    img=cv2.imread(input_path)
+    if img is None:
+        print(f"Could not read {filename}")
+        continue
+    h,w=img.shape[:2]
 
-os.makedirs(output_root, exist_ok=True)
+    #giving image size to YuNet
+    detector.setInputSize((w,h))
+    _,faces=detector.detect(img)
 
-for root, dirs, files in os.walk(input_root):
+    if faces is None or len(faces)==0:
+        print(f"No faces detected in {filename}")
+        continue
 
-    #Relative path from input dataset
-    relative_path=os.path.relpath(root, input_root)
+    #selecting highest confidence face
+    best_face=max(faces,key=lambda f:f[-1])
+    x,y,fw,fh=best_face[:4]
+    x=max(0,int (x))
+    y=max(0,int(y))
+    fw=int (fw)
+    fh=int (fh)
 
-    #creating same directory structures
-    output_dir=os.path.join(output_root, relative_path)
-    os.makedirs(output_dir, exist_ok=True)
+    #Crop face
+    face_crop=img[y:y+fh,x:x+fw]
+    output_path=os.path.join(OUTPUT_DIR,filename)
+    cv2.imwrite(output_path,face_crop)
+    print(f"Saved: {filename}")
 
-    for file in files:
-
-        if file.lower().endswith(('.jpg', '.jpeg', '.png', '.bmp')):
-            input_path = os.path.join(root, file)
-            img = cv2.imread(input_path)
-            if img is None:
-                print(f"Could not read {input_path}")
-                continue
-
-            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            faces = face_cascade.detectMultiScale(
-                gray,
-                scaleFactor=1.1,
-                minNeighbors=5,
-                minSize=(30, 30)
-            )
-
-            if len(faces) == 0:
-                print(f"No face detected: {input_path}")
-                continue
-
-            # Select largest face
-            largest_face = max(faces, key=lambda rect: rect[2] * rect[3])
-            x, y, w, h = largest_face
-
-            #Crop face
-            cropped_face = img[y:y+h, x:x+w]
-
-            #saving the cropped face
-            save_path = os.path.join(output_dir, file)
-            cv2.imwrite(save_path, cropped_face)
-            print(f"Saved cropped face: {file}")
-
-print("Face detection and cropping completed.")
-    
-
-
+print("\nDONE")

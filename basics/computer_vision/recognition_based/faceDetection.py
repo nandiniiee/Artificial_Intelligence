@@ -1,6 +1,8 @@
 import cv2
 import os
 
+#using retinaFace model here
+#retinaFace gives 5 facial landmarks (left eye, right eye, nose, left mouth corner, right mouth corner) which can be used for better alignment and cropping of faces.
 #loading the Haar Cascade classifier for face detection
 face_cascade = cv2.CascadeClassifier(
     cv2.data.haarcascades + "haarcascade_frontalface_default.xml"

@@ -91,7 +91,7 @@ for file in os.listdir(folder):
     new_h = int(h / zoom_factor)
     x1 = (w - new_w) // 2
     y1 = (h - new_h) // 2
-    zoom_in=img[y1:y1+new_h, x1:x1+new_w]
+    zoom_in = img[y1 : y1 + new_h, x1 : x1 + new_w]
     zoom_in = cv2.resize(zoom_in, (w, h))
     cv2.imwrite(os.path.join(folder, f"{filename}_zoomin.jpg"), zoom_in)
 

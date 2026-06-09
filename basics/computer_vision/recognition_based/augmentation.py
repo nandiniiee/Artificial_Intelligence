@@ -2,7 +2,7 @@ import os
 import cv2
 import numpy as np
 
-# folder containing nandini's images
+# folder containing images to be augmented
 folder = "dataset_sixFaces/nandini"
 print("Starting augemntaion\n")
 for file in os.listdir(folder):
@@ -83,7 +83,6 @@ for file in os.listdir(folder):
     M = np.float32([[1, 0, 10], [0, 1, 10]])
     shifted = cv2.warpAffine(img, M, (w, h))
     cv2.imwrite(os.path.join(folder, f"{filename}_shift.jpg"), shifted)
-    print(f"Augmented: {file}")
 
     # ZOOM IN
     zoom_factor = 1.1
@@ -105,5 +104,7 @@ for file in os.listdir(folder):
     y_offset = (h - new_h) // 2
     canvas[y_offset : y_offset + new_h, x_offset : x_offset + new_w] = small
     cv2.imwrite(os.path.join(folder, f"{filename}_zoomout.jpg"), canvas)
+
+    print(f"Augmented: {file}")
 
 print("\nAugmentation completed.")

@@ -3,9 +3,12 @@ import cv2
 import random
 import numpy as np
 from insightface.model_zoo import get_model
+from sklearn.decomposition import PCA
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
+random.seed(42)
+np.random.seed(42)
 # laoding arcface model
 model_path = os.path.expanduser("~/.insightface/models/buffalo_l/w600k_r50.onnx")
 arcface = get_model(model_path)
@@ -73,13 +76,32 @@ def create_pairs(embeddings):
 print("\nGenerating Train Embeddings...\n")
 train_embeddings = generate_embeddings("train")
 
+# PCA
+all_train_embeddings = []
+for person in train_embeddings:
+    all_train_embeddings.extend(train_embeddings[person])
+all_train_embeddings = np.array(all_train_embeddings)
+print("\nOriginal Embedding Shape:", all_train_embeddings.shape)
+print("\nApplying PCA...\n")
+pca = PCA(n_components=128)
+pca.fit(all_train_embeddings)
+print("Variance Retained:", round(np.sum(pca.explained_variance_ratio_) * 100, 2), "%")
+
+# transofroming training embeddings
+train_embeddings_pca = {}
+for person in train_embeddings:
+    train_embeddings_pca[person] = []
+    for emb in train_embeddings[person]:
+        emb_pca = pca.transform(emb.reshape(1, -1))[0]
+        train_embeddings_pca[person].append(emb_pca)
+
 # training pairs
-train_similarities, train_labels = create_pairs(train_embeddings)
+train_similarities, train_labels = create_pairs(train_embeddings_pca)
 
 # finding best threshold
 best_threshold = 0
 best_accuracy = 0
-for threshold in np.arange(0.30, 0.95, 0.01):
+for threshold in np.arange(0.0, 1.0, 0.001):
     predictions = []
     for sim in train_similarities:
         if sim >= threshold:
@@ -92,14 +114,22 @@ for threshold in np.arange(0.30, 0.95, 0.01):
         best_accuracy = accuracy
         best_threshold = threshold
 
-print("\nBest Threshold:", round(best_threshold, 2))
+print("\nBest Threshold:", round(best_threshold, 3))
 print("Training Verification Accuracy:", round(best_accuracy * 100, 2), "%")
 
 
 # testing embeddings with new threshold
 print("\nGenerating Test Embeddings...\n")
 test_embeddings = generate_embeddings("test")
-test_similarities, test_labels = create_pairs(test_embeddings)
+
+# transforming test embeddings
+test_embeddings_pca = {}
+for person in test_embeddings:
+    test_embeddings_pca[person] = []
+    for emb in test_embeddings[person]:
+        emb_pca = pca.transform(emb.reshape(1, -1))[0]
+        test_embeddings_pca[person].append(emb_pca)
+test_similarities, test_labels = create_pairs(test_embeddings_pca)
 
 # testing verification
 predictions = []

@@ -41,7 +41,7 @@ print("\nGenerating database embeddings...\n")
 database_embeddings = generate_embeddings("train")
 
 # query image path
-query_image_path = "query_images/yuvaansh.jpeg"
+query_image_path = "query_images/papa.jpeg"
 img = cv2.imread(query_image_path)
 if img is None:
     print("Query image not found")
@@ -65,7 +65,7 @@ for person in database_embeddings:
             best_person = person
 
 # threshold
-threshold = 0.75
+threshold = 0.90
 print("\nBest Match :", best_person)
 print("Similarity :", round(best_similarity, 4))
 if best_similarity >= threshold:

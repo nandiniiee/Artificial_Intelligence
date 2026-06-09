@@ -1,6 +1,7 @@
 import cv2
 import os
 import time #to measure processing time
+
 #using retinaFace model here
 #retinaFace gives 5 facial landmarks (left eye, right eye, nose, left mouth corner, right mouth corner) which can be used for better alignment and cropping of faces.
 from retinaface import RetinaFace

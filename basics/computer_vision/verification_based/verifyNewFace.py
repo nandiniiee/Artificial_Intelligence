@@ -41,7 +41,7 @@ print("\nGenerating database embeddings...\n")
 database_embeddings = generate_embeddings("train")
 
 # query image path
-query_image_path = "query_images/virat.jpg"
+query_image_path = "query_images/yuvaansh.jpeg"
 img = cv2.imread(query_image_path)
 if img is None:
     print("Query image not found")

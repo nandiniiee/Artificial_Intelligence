@@ -83,7 +83,7 @@ for person in train_embeddings:
 all_train_embeddings = np.array(all_train_embeddings)
 print("\nOriginal Embedding Shape:", all_train_embeddings.shape)
 print("\nApplying PCA...\n")
-pca = PCA(n_components=128)
+pca = PCA(n_components=200)
 pca.fit(all_train_embeddings)
 print("Variance Retained:", round(np.sum(pca.explained_variance_ratio_) * 100, 2), "%")
 

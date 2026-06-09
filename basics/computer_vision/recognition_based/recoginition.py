@@ -69,7 +69,7 @@ print("Test Shape:", X_test.shape)
 
 # applying PCA
 print("\nApplying PCA...\n")
-pca = PCA(n_components=128)
+pca = PCA(n_components=200)
 X_train_pca = pca.fit_transform(X_train)
 X_test_pca = pca.transform(X_test)
 print("Variance Retained:", round(np.sum(pca.explained_variance_ratio_) * 100, 2), "%")

@@ -3,7 +3,7 @@ import cv2
 import numpy as np
 import joblib
 from insightface.model_zoo import get_model
-
+from sklearn.decomposition import PCA
 from sklearn.svm import SVC
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
@@ -61,14 +61,32 @@ X_test, y_test = generate_embeddings("test")
 print(f"\nTesting Embeddings Generated: {len(X_test)}")
 print("Testing embedding shape:", X_test.shape)
 
+# PCA
+# shapes before PCA
+print("\nBefore PCA")
+print("Train Shape:", X_train.shape)
+print("Test Shape:", X_test.shape)
+
+# applying PCA
+print("\nApplying PCA...\n")
+pca = PCA(n_components=128)
+X_train_pca = pca.fit_transform(X_train)
+X_test_pca = pca.transform(X_test)
+print("Variance Retained:", round(np.sum(pca.explained_variance_ratio_) * 100, 2), "%")
+
+print("\nAfter PCA")
+print("Train Shape:", X_train_pca.shape)
+print("Test Shape:", X_test_pca.shape)
+
+
 # svm training
 print("\nTraining SVM...\n")
 svm = SVC(kernel="linear", probability=True)
-svm.fit(X_train, y_train)
+svm.fit(X_train_pca, y_train)
 print("Training Complete")
 
 # testing svm model
-predictions = svm.predict(X_test)
+predictions = svm.predict(X_test_pca)
 accuracy = accuracy_score(y_test, predictions)
 print("\nAccuracy:", round(accuracy * 100, 2), "%")
 print("\nClassification Report:\n")
